@@ -4,6 +4,9 @@ import Select from 'react-select'
 import 'react-select/dist/react-select.css'
 import JqueryComponent from './JqueryComponent'
 import { findDOMNode } from 'react-dom'
+import DayPicker, { DateUtils } from 'react-day-picker';
+
+import 'react-day-picker/lib/style.css';
 
 class Container extends Component {
     static propTypes = {
@@ -11,7 +14,24 @@ class Container extends Component {
     };
 
     state = {
-        selected: null
+        selected: null,
+        from: null,
+        to: null
+    }
+
+    handleDayClick = (e, day) => {
+        const range = DateUtils.addDayToRange(day, this.state)
+        this.setState(range)
+        console.log(range)
+    }
+
+    handleResetClick = (e) => {
+        e.preventDefault()
+
+        this.setState({
+            from: null,
+            to: null
+        })
     }
 
     render() {
@@ -19,10 +39,18 @@ class Container extends Component {
             label: article.title,
             value: article.id
         }))
+        const { from, to } = this.state
         return (
             <div>
                 <Select options = {options} value={this.state.selected} onChange = {this.handleChange} multi={true}/>
-                <ArticleList articles = {this.props.articles} />
+                <DayPicker
+                    ref="daypicker"
+                    numberOfMonths={ 1 }
+                    selectedDays={ day => DateUtils.isDayInRange(day, { from, to }) }
+                    onDayClick={ this.handleDayClick }
+                    />
+                <a href="#" onClick={ this.handleResetClick }>Reset</a>
+                <ArticleList articles = {this.props.articles} filter = { {fromDate: from, toDate: to} }/>
                 <JqueryComponent items = {this.props.articles} ref={this.getJQ}/>
             </div>
         )
