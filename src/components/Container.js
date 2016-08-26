@@ -40,12 +40,14 @@ class Container extends Component {
             value: article.id
         }))
         const { from, to } = this.state
+        //а показывать этот  диапазон?
         return (
             <div>
                 <Select options = {options} value={this.state.selected} onChange = {this.handleChange} multi={true}/>
                 <DayPicker
                     ref="daypicker"
                     numberOfMonths={ 1 }
+                    {/*сохрани эту функцию в метод, иначе она постоянно ининциализироваться будет, + лишний код в JSX*/}
                     selectedDays={ day => DateUtils.isDayInRange(day, { from, to }) }
                     onDayClick={ this.handleDayClick }
                     />
