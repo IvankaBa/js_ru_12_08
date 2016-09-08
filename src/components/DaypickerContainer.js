@@ -1,18 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import DayPicker, { DateUtils } from "react-day-picker"
 import 'react-day-picker/lib/style.css'
-import { connect } from 'react-redux'
-import { filteredCalender } from '../AC/calender'
+
 
 class Daypicker extends Component {
     static propTypes = {
-
+        changeDates: PropTypes.func.isRequired,
+        dates: PropTypes.object.isRequired
     };
-
-    state = {
-        from: null,
-        to: null
-    }
 
     render() {
         return (
@@ -27,10 +22,9 @@ class Daypicker extends Component {
         )
     }
 
-    handleSelect = day => DateUtils.isDayInRange(day, this.state)
+    handleSelect = day => DateUtils.isDayInRange(day, this.props.dates)
     getRangeTitle() {
-        const { from, to } = this.state
-        filteredCalender(from, to)
+        const { from, to } = this.props.dates
         const fromText = from && `Start date: ${from.toDateString()}`
         const toText = to && `Finish date: ${to.toDateString()}`
 
@@ -38,9 +32,10 @@ class Daypicker extends Component {
     }
 
     handleDayClick = (e, day) => {
-        const range = DateUtils.addDayToRange(day, this.state);
-        this.setState(range)
+        const { dates, changeDates } = this.props
+        const range = DateUtils.addDayToRange(day, dates);
+        changeDates(range)
     }
 }
 
-export default connect(null, { filteredCalender })(Daypicker)
+export default Daypicker

@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'
+import { connect } from 'react-redux'
 
 function Comment(props) {
     if (!props.comment) return null
@@ -6,9 +7,13 @@ function Comment(props) {
     return (
         <p>
             {text}
-            <strong>by {user}</strong>
+            {decrateUser(user)}
         </p>
     )
+}
+
+function decrateUser(user) {
+    return <strong>by {user}</strong>
 }
 
 Comment.propTypes = {
@@ -18,4 +23,8 @@ Comment.propTypes = {
     })
 }
 
-export default Comment
+export default connect(({ comments }, props) => {
+    return {
+        comment: comments.find(comment => comment.id == props.commentId)
+    }
+})(Comment)
